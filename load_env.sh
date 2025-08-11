@@ -5,9 +5,7 @@
 load_env() {
     if [ -f .env ]; then
         # 导出.env中的变量，忽略注释和空行
-        set -a
-        source <(grep -v '^#' .env | grep -v '^$')
-        set +a
+        export $(grep -v '^#' .env | grep -v '^$' | xargs)
         return 0
     else
         echo "警告：未找到 .env 文件"
