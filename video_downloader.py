@@ -774,54 +774,74 @@ class VideoDownloader:
                 })
             elif d['status'] == 'finished':
                 self.update_progress(url, {'status': 'completed'})
-                
-        ydl_opts = {
-            'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),
-            'progress_hooks': [progress_hook],
-            'postprocessor_hooks': [postprocessor_hook],
-            'quiet': True,
-            'no_warnings': True,
-            'extract_flat': False,
-            'nocheckcertificate': False,
-            'verbose': False,
-        }
         
-        if hasattr(sys, '_MEIPASS'):
-            ydl_opts['nocheckcertificate'] = True
+        # 尝试多种格式配置
+        format_configs = [
+            'best[ext=mp4]/best[ext=flv]/best',  # 优先mp4，然后flv，最后任意
+            'best[height<=1080]/best',  # 1080p以下
+            'best[height<=720]/best',   # 720p以下
+            'best[height<=480]/best',   # 480p以下
+            'worst/best',               # 最差质量
+        ]
         
-        try:
-            self.log_message(f"解析视频: {url}", "INFO")
+        for i, format_string in enumerate(format_configs):
+            ydl_opts = {
+                'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),
+                'progress_hooks': [progress_hook],
+                'postprocessor_hooks': [postprocessor_hook],
+                'quiet': True,
+                'no_warnings': True,
+                'extract_flat': False,
+                'nocheckcertificate': False,
+                'verbose': False,
+                'format': format_string,
+                'merge_output_format': 'mp4',
+                'no_check_formats': True,
+                'ignoreerrors': False,
+            }
             
-            # 先提取视频信息
-            with yt_dlp.YoutubeDL({**ydl_opts, 'skip_download': True}) as ydl:
-                info = ydl.extract_info(url, download=False)
-                video_title = info.get('title', '未知标题')
-                
-                # 更新为"准备下载"状态，显示视频标题
-                self.update_progress(url, {
-                    'status': 'preparing',
-                    'title': video_title
-                })
-                
-            self.log_message(f"开始下载: {video_title}", "INFO")
+            if hasattr(sys, '_MEIPASS'):
+                ydl_opts['nocheckcertificate'] = True
             
-            # 开始实际下载
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
+            try:
+                self.log_message(f"解析视频: {url}", "INFO")
                 
-            # 确保状态为完成
-            self.update_progress(url, {'status': 'completed'})
-            self.completed_videos += 1
-            self.update_overall_progress()
-            self.log_message(f"下载完成: {video_title}", "SUCCESS")
-            
-        except Exception as e:
-            self.failed_videos += 1
-            self.completed_videos += 1
-            error_msg = str(e)[:100]
-            self.update_progress(url, {'status': 'error', 'error': error_msg})
-            self.log_message(f"下载失败 {url}: {error_msg}", "ERROR")
-            self.update_overall_progress()
+                # 先提取视频信息
+                with yt_dlp.YoutubeDL({**ydl_opts, 'skip_download': True}) as ydl:
+                    info = ydl.extract_info(url, download=False)
+                    video_title = info.get('title', '未知标题')
+                    
+                    # 更新为"准备下载"状态，显示视频标题
+                    self.update_progress(url, {
+                        'status': 'preparing',
+                        'title': video_title
+                    })
+                    
+                self.log_message(f"开始下载: {video_title} (格式策略 {i+1})", "INFO")
+                
+                # 开始实际下载
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([url])
+                    
+                # 确保状态为完成
+                self.update_progress(url, {'status': 'completed'})
+                self.completed_videos += 1
+                self.update_overall_progress()
+                self.log_message(f"下载完成: {video_title}", "SUCCESS")
+                return  # 成功下载，退出重试循环
+                
+            except Exception as e:
+                error_msg = str(e)
+                if i < len(format_configs) - 1:  # 还有其他格式可以尝试
+                    self.log_message(f"格式策略 {i+1} 失败，尝试下一个策略: {error_msg[:50]}", "WARNING")
+                    continue
+                else:  # 所有格式都失败了
+                    self.failed_videos += 1
+                    self.completed_videos += 1
+                    self.update_progress(url, {'status': 'error', 'error': error_msg})
+                    self.log_message(f"下载失败 {url}: {error_msg}", "ERROR")
+                    self.update_overall_progress()
+                    return
             
     def update_overall_progress(self):
         """更新整体进度"""
