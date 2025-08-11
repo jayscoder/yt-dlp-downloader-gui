@@ -16,6 +16,10 @@ if [ -d "dist/智能视频下载工具.app" ]; then
     echo "打包成功！"
     echo "应用程序位置: dist/智能视频下载工具.app"
     
+    # 移除隔离属性，允许应用运行
+    echo "移除隔离属性..."
+    xattr -cr "dist/智能视频下载工具.app"
+    
     # 创建DMG（可选）
     # echo "创建DMG安装包..."
     # hdiutil create -volname "智能视频下载工具" -srcfolder dist/智能视频下载工具.app -ov -format UDZO dist/智能视频下载工具.dmg

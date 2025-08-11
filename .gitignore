@@ -70,3 +70,7 @@ env/
 temp/
 downloads/
 output/
+
+# Environment variables
+.env
+.env.local

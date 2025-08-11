@@ -27,11 +27,11 @@ class VideoDownloader:
         
         # 设置主题颜色
         self.colors = {
-            'primary': '#000000',  # 改为黑色
-            'primary_dark': '#333333',  # 深灰
-            'success': '#000000',  # 改为黑色
-            'error': '#000000',  # 改为黑色
-            'warning': '#000000',  # 改为黑色
+            'primary': '#FFFFFF',  # 白色
+            'primary_dark': '#F0F0F0',  # 浅灰
+            'success': '#FFFFFF',  # 白色
+            'error': '#FFFFFF',  # 白色
+            'warning': '#FFFFFF',  # 白色
             'bg': '#F5F5F5',
             'card_bg': '#FFFFFF',
             'text': '#000000',  # 纯黑色
@@ -206,11 +206,12 @@ class VideoDownloader:
         browse_btn = tk.Button(path_frame,
                              text="浏览",
                              font=('Microsoft YaHei', 11),
-                             bg=self.colors['primary'],
+                             bg='white',
                              fg='black',
-                             activebackground=self.colors['primary_dark'],
+                             activebackground='#F0F0F0',
                              activeforeground='black',
-                             relief='flat',
+                             relief='solid',
+                             bd=1,
                              padx=20,
                              cursor='hand2',
                              command=self.browse_folder)
@@ -248,11 +249,12 @@ class VideoDownloader:
         self.download_btn = tk.Button(button_frame,
                                      text="▶ 开始下载",
                                      font=('Microsoft YaHei', 12, 'bold'),
-                                     bg=self.colors['success'],
+                                     bg='white',
                                      fg='black',
-                                     activebackground='#45A049',
+                                     activebackground='#F0F0F0',
                                      activeforeground='black',
-                                     relief='flat',
+                                     relief='solid',
+                                     bd=1,
                                      padx=35,
                                      pady=12,
                                      cursor='hand2',
@@ -262,11 +264,12 @@ class VideoDownloader:
         self.stop_btn = tk.Button(button_frame,
                                 text="⏸ 停止下载",
                                 font=('Microsoft YaHei', 12, 'bold'),
-                                bg=self.colors['error'],
+                                bg='white',
                                 fg='black',
-                                activebackground='#D32F2F',
+                                activebackground='#F0F0F0',
                                 activeforeground='black',
-                                relief='flat',
+                                relief='solid',
+                                bd=1,
                                 padx=35,
                                 pady=12,
                                 state='disabled',
