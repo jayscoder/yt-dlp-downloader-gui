@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>智能视频下载工具 V2</string>
+	<key>CFBundleExecutable</key>
+	<string>智能视频下载工具</string>
+	<key>CFBundleGetInfoString</key>
+	<string>智能视频下载工具 V2</string>
+	<key>CFBundleIconFile</key>
+	<string>generated-da37ee73da90c660a3719da8cfeddd8d085a87ffed8b8624c6baf768381d2764.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.videodownloader.v2</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>智能视频下载工具</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>2.0.0</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.15.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
+</dict>
+</plist>
