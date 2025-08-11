@@ -36,6 +36,12 @@ pip install -r requirements.txt
 python video_downloader.py
 ```
 
+![image-20250811175050103](README.assets/image-20250811175050103.png)
+
+![image-20250811175126879](README.assets/image-20250811175126879.png)
+
+
+
 ### 打包成独立应用
 
 1. 给打包脚本添加执行权限：
