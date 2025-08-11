@@ -777,11 +777,16 @@ class VideoDownloader:
         
         # 尝试多种格式配置
         format_configs = [
-            'best[ext=mp4]/best[ext=flv]/best',  # 优先mp4，然后flv，最后任意
-            'best[height<=1080]/best',  # 1080p以下
-            'best[height<=720]/best',   # 720p以下
-            'best[height<=480]/best',   # 480p以下
-            'worst/best',               # 最差质量
+            # 优先尝试不需要合并的格式
+            'best[ext=mp4][vcodec!=none][acodec!=none]',  # 包含视频和音频的mp4
+            'best[vcodec!=none][acodec!=none]',  # 包含视频和音频的任意格式
+            # 如果有ffmpeg，尝试合并格式
+            'bestvideo[height<=720]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio',
+            'bestvideo[height<=480]+bestaudio[ext=m4a]/bestvideo[height<=480]+bestaudio',
+            # 仅视频格式作为备选
+            'bestvideo[height<=720]',
+            'bestvideo[height<=480]',
+            'worst',
         ]
         
         for i, format_string in enumerate(format_configs):
@@ -795,9 +800,11 @@ class VideoDownloader:
                 'nocheckcertificate': False,
                 'verbose': False,
                 'format': format_string,
-                'merge_output_format': 'mp4',
                 'no_check_formats': True,
                 'ignoreerrors': False,
+                # 禁用需要ffmpeg的功能
+                'prefer_ffmpeg': False,
+                'no_post_overwrites': True,
             }
             
             if hasattr(sys, '_MEIPASS'):
